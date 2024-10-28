@@ -1,0 +1,99 @@
+<html lang="en">
+
+<head>
+    <title>ol_exp3</title>
+    <style>
+        div.map1 {
+            width: 500px;
+            height: 500px;
+            border-color: brown;
+            border-style: solid;
+            float: left;
+        }
+
+        label {
+            width: 120px;
+            display: block;
+            color: blue;
+
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.1.0/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.1.0/ol.css">
+
+</head>
+
+<body>
+    <div id="m1" class="map1"></div>
+    <div id="m2" class="map1"></div>
+    <div id="map_input">
+        <p>
+            <label>Long Value:</label>
+            <input type="text" id="in_Lon" name="Long" value="46.6182"><br>
+            <label>Lat Value:</label>
+            <input type="text" id="In_Lat" name="Lat" value="24.7231"><br>
+            <label>Zoom level :</label>
+            <input type="text" id="in_Zoom" name="zoom" value="18">
+        </p>
+    </div>
+    <input type="button" value="Print info" onclick="onClick()">
+    <script>
+        var map = new ol.Map();
+        var layer1 = new ol.layer.Tile();
+        var layer2 = new ol.layer.Tile();
+        var view = new ol.View();
+        var center = ol.proj.fromLonLat([46.6182, 24.7231]);
+
+        view.setCenter(center);
+        ZOOM = 18
+        view.setZoom(ZOOM);
+        source1 = new ol.source.OSM();
+        source2 = new ol.source.TileDebug();
+        layer1.setSource(source1);
+        layer2.setSource(source2);
+        map.addLayer(layer1);
+        map.addLayer(layer2);
+        map.setTarget('m1');
+        map.setView(view);
+
+        function onClick() {
+            console.clear();
+            x = parseFloat(document.getElementById("in_Lon").value);
+            y = parseFloat(document.getElementById("In_Lat").value);
+            center = ol.proj.fromLonLat([x, y]);
+            ZOOM = parseInt(document.getElementById("in_Zoom").value);
+            //https://a.tile.openstreetmap.org/16/41254/28121.png
+
+            console.log(center);
+            view.setZoom(ZOOM);
+            view.setCenter(center);
+            ZOOM = Math.round(view.getZoom());
+            Size = map.getSize();
+            Size = [1, 1];
+            console.log('Size');
+            console.log(Size);
+            let extent = view.calculateExtent(Size);
+            console.log('extent');
+            console.log(extent);
+            TileGrid = source2.getTileGrid();
+            console.log('TileGrid');
+            console.log(TileGrid);
+            console.log('resolutions');
+            console.log(TileGrid.resolutions_[ZOOM]);
+            //console.table(TileGrid.fullTileRanges_);
+            console.log(TileGrid.fullTileRanges_[ZOOM]);
+
+            console.log(ZOOM);
+            TileGrid.forEachTileCoord(extent, ZOOM, (Tile) => { console.log(Tile) })
+
+        }
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
